@@ -1,0 +1,38 @@
+stages:
+  - ci
+  - deploy
+  - rm
+
+variables:
+  IMG_NAME: locod-tb
+  REG_HOST: docker-registry:443/embedded
+
+build-ci-docker:
+  stage: ci
+  tags:
+    - docker-build
+
+  script:
+    - docker build -t ${IMG_NAME}_ci:ci-${CI_COMMIT_REF_NAME} .
+    - docker run --rm -t ${IMG_NAME}_ci:ci-${CI_COMMIT_REF_NAME} ghdl --version
+
+build-deploy:
+  stage: deploy
+  tags:
+    - docker-build
+  only:
+    - tags
+
+  script:
+    - docker tag ${IMG_NAME}_ci:ci-${CI_COMMIT_REF_NAME} ${REG_HOST}/${IMG_NAME}:$CI_COMMIT_TAG 
+    - docker image tag ${REG_HOST}/${IMG_NAME}:$CI_COMMIT_TAG ${REG_HOST}/${IMG_NAME}:latest
+    - docker push ${REG_HOST}/${IMG_NAME}:latest
+    - docker push ${REG_HOST}/${IMG_NAME}:$CI_COMMIT_TAG
+
+remove-tmp-img:
+  stage: rm
+  tags:
+    - docker-build
+
+  script:
+    - docker image rm ${IMG_NAME}_ci:ci-${CI_COMMIT_REF_NAME}
