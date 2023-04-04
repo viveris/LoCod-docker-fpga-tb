@@ -10,7 +10,7 @@ RUN 	apt-get update && \
 	apt-get clean
 
 
-# PandA build and install
+# GHDL build and install
 RUN git clone https://github.com/ghdl/ghdl /tmp/ghdl
 RUN	cd /tmp/ghdl && \
 	./configure --prefix=/usr/local && \
