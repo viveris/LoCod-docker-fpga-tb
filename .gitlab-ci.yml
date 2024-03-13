@@ -15,6 +15,7 @@ build-ci-docker:
   script:
     - docker build -t ${IMG_NAME}_ci:ci-${CI_COMMIT_REF_NAME} .
     - docker run --rm -t ${IMG_NAME}_ci:ci-${CI_COMMIT_REF_NAME} ghdl --version
+    - docker run --rm -t ${IMG_NAME}_ci:ci-${CI_COMMIT_REF_NAME} verilator --version
 
 build-deploy:
   stage: deploy
