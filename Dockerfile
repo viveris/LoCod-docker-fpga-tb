@@ -37,7 +37,6 @@ RUN pip3 install cocotb
 RUN pip3 install cocotbext-axi
 
 # Workdir
-WORKDIR /root
-
-# Start command
-CMD bash
+RUN mkdir /workdir
+RUN chmod -R 777 /workdir
+WORKDIR /workdir
